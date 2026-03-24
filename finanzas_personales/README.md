@@ -1,26 +1,42 @@
+<p align="center">
+  <img src="assets/ui/logo.png" alt="Logo de Finanzas Personales" width="220">
+</p>
+
 # Finanzas Personales
 
-Aplicacion de escritorio offline para administrar personas, ingresos, gastos y analisis financiero desde una interfaz clasica construida con `wxPython`.
+Aplicacion de escritorio offline para administrar personas, ingresos, gastos y analisis financiero desde una interfaz clasica, clara y lista para uso local.
 
-El proyecto esta pensado para dos usos concretos:
-- resolver una necesidad real de control financiero local, sin depender de internet;
-- servir como base de estudio para arquitectura por capas, MVP, servicios, repositorios y persistencia con SQLite.
+<p align="center">
+  <img src="finanzaspersonalescapture.png" alt="Captura de la aplicacion con estadisticas financieras por persona" width="1000">
+</p>
 
-## Propuesta de valor
+Panel de resumen financiero de una persona real dentro de la aplicacion. La vista concentra saldo disponible, ingresos, gastos, tasa de ahorro y varios graficos para leer la situacion financiera de un vistazo.
 
-- Funciona de forma local con `SQLite`, sin backend ni servicios externos.
-- Tiene interfaz de escritorio tradicional, facil de usar para contextos administrativos.
-- Incluye reportes, metricas, graficos y alertas financieras.
-- Mantiene una estructura de codigo clara para aprender y seguir refactorizando.
-- Se puede ejecutar rapido en Windows, Linux y macOS.
+## Que es
 
-## Funcionalidades principales
+`Finanzas Personales` combina gestion administrativa y analisis visual en una sola app de escritorio:
 
-- Gestion de personas con datos generales, foto y observaciones.
-- Registro de ingresos y gastos por categoria.
-- Resumen financiero con indicadores, comparativas y visualizaciones.
-- Herramientas auxiliares para datos demo, diagnostico y empaquetado.
-- Pruebas automatizadas sobre servicios, repositorios y presenter.
+- administra fichas de personas con datos generales, foto y observaciones;
+- registra ingresos y gastos por categoria;
+- calcula indicadores financieros utiles;
+- muestra comparativas, alertas y graficos sin depender de internet;
+- guarda todo localmente con `SQLite`.
+
+## Por que destaca
+
+- Es una aplicacion `offline-first`: no necesita backend, servidor ni suscripciones.
+- Tiene una UI de escritorio tradicional, comoda para uso administrativo.
+- Organiza el codigo por capas para que tambien sirva como proyecto de estudio.
+- Incluye herramientas de diagnostico, datos demo y empaquetado.
+- Ya cuenta con instalador MSI para Windows.
+
+## Lo que puedes hacer
+
+- Crear y editar personas con informacion de contacto y notas.
+- Registrar movimientos financieros de ingreso o gasto.
+- Analizar saldos, ratios, ahorro y distribucion de gastos.
+- Revisar comportamiento mensual con graficos integrados.
+- Exportar informacion y mantener evidencia local del estado financiero.
 
 ## Inicio rapido
 
@@ -44,51 +60,17 @@ python run.py
 
 El lanzador crea el entorno virtual si hace falta, instala dependencias, inicializa la base de datos y abre la aplicacion.
 
-## Instalacion manual para desarrollo
+## Instalador
 
-### Windows
+El flujo de instalacion ya soporta branding desde el logo principal y genera iconos derivados automaticamente.
 
-```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python src/main.py
-```
-
-### Linux / macOS
+### Construir assets de marca
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python src/main.py
+python tools/generate_brand_assets.py
 ```
 
-## Datos demo, pruebas y soporte
-
-### Cargar datos de ejemplo
-
-```bash
-python src/infrastructure/db/seeds_demo.py
-```
-
-### Ejecutar diagnostico local
-
-```bash
-python tools/diagnostico.py
-```
-
-### Ejecutar pruebas
-
-```bash
-python -m unittest discover -s tests -p "test_*.py" -v
-```
-
-Si instalas dependencias de desarrollo, tambien puedes usar `pytest`.
-
-## Empaquetado
-
-Los scripts de soporte se movieron a `tools/` para mantener la raiz del repositorio limpia:
+### Construir ejecutable o instalador
 
 ```bash
 python tools/setup_installer.py build
@@ -96,9 +78,11 @@ python tools/setup_installer.py bdist_msi
 python tools/setup_installer.py bdist_dmg
 ```
 
+La guia detallada esta en [docs/INSTALADOR.md](docs/INSTALADOR.md).
+
 ## Arquitectura
 
-El proyecto sigue una separacion por capas:
+El proyecto sigue una separacion por capas para que la logica sea mantenible y estudiable:
 
 1. `domain`: entidades y reglas de negocio.
 2. `application`: servicios y casos de uso.
@@ -106,45 +90,43 @@ El proyecto sigue una separacion por capas:
 4. `presentation`: vistas, presenters y coordinacion de la UI.
 5. `shared`: configuracion y utilidades transversales.
 
-Esta organizacion facilita el mantenimiento y ayuda a estudiar responsabilidades bien separadas.
-
 ## Estructura del repositorio
 
 ```text
 finanzas_personales/
-|-- assets/              # Recursos visuales
-|-- data/                # Datos locales vacios en Git
-|-- docs/                # Documentacion tecnica y funcional
-|-- src/                 # Codigo fuente principal
+|-- assets/
+|-- docs/
+|-- src/
 |   |-- application/
 |   |-- domain/
 |   |-- infrastructure/
 |   |-- presentation/
 |   `-- shared/
-|-- tests/               # Pruebas automatizadas
-|-- tools/               # Scripts de soporte y packaging
-|-- run.bat              # Lanzador rapido en Windows
-|-- run.py               # Lanzador universal en Python
-|-- run.sh               # Lanzador rapido en Linux/macOS
-|-- install.sh           # Instalacion orientada a Linux/macOS
-|-- pyproject.toml       # Metadata del proyecto
-|-- requirements.txt     # Dependencias base
+|-- tests/
+|-- tools/
+|-- run.bat
+|-- run.py
+|-- run.sh
+|-- pyproject.toml
+|-- requirements.txt
 |-- LICENSE
 `-- README.md
 ```
 
 ## Documentacion adicional
 
+- [Guia de instalacion](docs/INSTALACION.md)
+- [Construccion del instalador](docs/INSTALADOR.md)
+- [Guia para principiantes](docs/GUIA_PRINCIPIANTES.md)
 - [Arquitectura](docs/arquitectura.md)
 - [Modelo de datos](docs/modelo_de_datos.md)
-- [Guia para principiantes](docs/GUIA_PRINCIPIANTES.md)
-- [Instalacion](docs/INSTALACION.md)
 - [Auditoria tecnica](docs/AUDITORIA_ACTUALIZADA.md)
-- [Diagnostico visual](docs/DIAGNOSTICO_VISUAL.md)
 
-## Estado actual
+## Pruebas
 
-La raiz del proyecto fue depurada para publicacion: se retiraron scripts redundantes, se separaron utilidades de soporte en `tools/`, se excluyeron artefactos generados del control de versiones y se reforzo la documentacion base para GitHub.
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
+```
 
 ## Licencia
 

@@ -21,7 +21,9 @@ Layout:
 └─────────────────────────────────────────────────────────┘
 """
 import wx
+import wx.adv
 
+from ...infrastructure.config.settings import Config
 from ...infrastructure.db.database import Database
 from ...infrastructure.repositories.persona_repository import PersonaRepository
 from ...application.services.persona_service import PersonaService
@@ -48,6 +50,8 @@ class MainWindow(wx.Frame):
         # Configurar ventana
         self.SetMinSize((DIMENSIONS['window_min_width'], DIMENSIONS['window_min_height']))
         self.SetBackgroundColour(COLORS['window_bg'])
+        self.app_icon = None
+        self._apply_branding()
         
         # Inicializar servicios
         self._init_services()
@@ -65,8 +69,6 @@ class MainWindow(wx.Frame):
     
     def _init_services(self):
         """Inicializa servicios y presentador."""
-        from ...infrastructure.config.settings import Config
-        
         self.db = Database(str(Config.DB_PATH))
         conn = self.db.get_connection()
         
@@ -90,6 +92,39 @@ class MainWindow(wx.Frame):
             self.persona_service,
             self.movimiento_service
         )
+
+    def _apply_branding(self):
+        """Carga el logo como icono de la ventana y de dialogs del producto."""
+        icon_bundle = self._build_icon_bundle()
+        if icon_bundle is not None:
+            self.SetIcons(icon_bundle)
+
+    def _build_icon_bundle(self):
+        """Construye un paquete de iconos a partir del logo principal."""
+        image_path = None
+        for candidate in (Config.APP_ICON_PNG_PATH, Config.LOGO_PATH):
+            if candidate.exists():
+                image_path = candidate
+                break
+
+        if image_path is None:
+            return None
+
+        image = wx.Image(str(image_path), wx.BITMAP_TYPE_ANY)
+        if not image.IsOk():
+            return None
+
+        bundle = wx.IconBundle()
+        for size in (16, 24, 32, 48, 64, 128, 256):
+            scaled = image.Scale(size, size, wx.IMAGE_QUALITY_HIGH)
+            bitmap = wx.Bitmap(scaled)
+            icon = wx.Icon()
+            icon.CopyFromBitmap(bitmap)
+            bundle.AddIcon(icon)
+            if size == 48:
+                self.app_icon = icon
+
+        return bundle
     
     def _setup_menu(self):
         """Configura menú superior clásico."""
@@ -576,16 +611,19 @@ class MainWindow(wx.Frame):
         )
     
     def _on_about(self, event):
-        """Muestra diálogo Acerca de."""
-        wx.MessageBox(
-            f"{ICONS['money']} Finanzas Personales v0.2.0\n\n"
+        """Muestra un diálogo Acerca de con branding real de la app."""
+        info = wx.adv.AboutDialogInfo()
+        info.SetName(Config.APP_NAME)
+        info.SetVersion(Config.APP_VERSION)
+        info.SetDescription(
             "Aplicación de escritorio para gestionar finanzas personales.\n\n"
-            "Diseño UX Profesional - Estilo clásico de oficina\n"
-            "Con accesibilidad WCAG 2.1 AA\n\n"
-            "© 2026 - Proyecto Didáctico",
-            "Acerca de",
-            wx.OK | wx.ICON_INFORMATION
+            "Incluye fichas de personas, movimientos, resúmenes y análisis visual."
         )
+        info.SetCopyright("Copyright 2026 Finanzas Personales contributors")
+        info.SetDevelopers(["Finanzas Personales contributors"])
+        if self.app_icon is not None:
+            info.SetIcon(self.app_icon)
+        wx.adv.AboutBox(info, self)
     
     def _on_exit(self, event):
         """Maneja salida de la aplicación."""
